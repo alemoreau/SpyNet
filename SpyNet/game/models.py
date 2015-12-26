@@ -11,6 +11,7 @@ class Player(models.Model):
     data_perso = models.IntegerField()
     cash = models.IntegerField()
     score = models.IntegerField()
+
     # Technology
     techno_overclock = models.SmallIntegerField()
     techno_spyware = models.SmallIntegerField()
@@ -26,7 +27,7 @@ class Player(models.Model):
     techno_data = models.SmallIntegerField()
     techno_parallelization = models.SmallIntegerField()
     techno_crypto = models.SmallIntegerField()
-    
+
     date = models.DateTimeField(auto_now_add=True, auto_now=False,
                                 verbose_name="Creation date")
 
@@ -37,92 +38,50 @@ class Player(models.Model):
 class Computer(models.Model):
     ip = models.GenericIPAddressField()
     owner = models.ForeignKey('Player')
-    data_perso = models.IntegerField()
-    score = models.IntegerField()
+    data = models.IntegerField()
 
-    date = models.DateTimeField(auto_now_add=True, auto_now=False,
-                                verbose_name="Creation date")
+    # Hardware
+    cooling_system = models.SmallIntegerField('CoolingSystem')
+    power_supply = models.SmallIntegerField('PowerSupply')
+    network_interface = models.SmallIntegerField('NetworkInterface')
+    cpu = models.SmallIntegerField('CPU')
+    core_count = models.SmallIntegerField()
+    ram = models.SmallIntegerField('RAM')
+    memory_stick = models.SmallIntegerField('MemoryStick')
+    hard_drive = models.SmallIntegerField('HardDrive')
+    
+    # Software
+    anti_virus = models.SmallIntegerField()
+    anti_spyware = models.SmallIntegerField()
+    firewall = models.SmallIntegerField()
+
+    # Settings
+    #   - Hardware
+    fan_power = models.SmallIntegerField()
+    cpu_power = models.SmallIntegerField()
+    ram_power = models.SmallIntegerField()
+    hdd_power = models.SmallIntegerField()
+    network_interface_activated = models.SmallIntegerField()
+
+    #   - Software
+    anti_virus_priority = models.SmallIntegerField()
+    anti_spyware_priority = models.SmallIntegerField()
+    firewall_priority = models.SmallIntegerField()
+    update_priority = models.SmallIntegerField()
+    scan_priority = models.SmallIntegerField()
+
+    date_creation = models.DateTimeField(auto_now_add=True, auto_now=False,
+                                         verbose_name="Creation date")
+    date_update = models.DateTimeField(auto_now_add=True, auto_now=True,
+                                       verbose_name="Update date")
 
     def __str__(self):
         return str(self.ip)
 
 
-class CPU(models.Model):
-    computer = models.ForeignKey('Computer')
-    overclocked = models.BooleanField()
-    level = models.SmallIntegerField()  # Core count
-    
-    def __str__(self):
-        return "CPU " + self.level
-
-
-class Core(models.Model):
-    cpu = models.ForeignKey('CPU')
-    level = models.SmallIntegerField()
-    power_usage = models.SmallIntegerField()
-
-    def __str__(self):
-        return "Core " + self.level
-
-
-class RAM(models.Model):
-    computer = models.ForeignKey('Computer')
-    overclocked = models.BooleanField()
-
-    def __str__(self):
-        return "RAM"
-
-
-class MemoryStick(models.Model):
-    ram = models.ForeignKey('RAM')
-    level = models.SmallIntegerField()
-    power_usage = models.SmallIntegerField()
-
-    def __str__(self):
-        return "Memory Stick " + self.level
-
-
-class Fan(models.Model):
-    computer = models.ForeignKey('Computer')
-    level = models.SmallIntegerField()
-    power_usage = models.SmallIntegerField()
-
-    def __str__(self):
-        return "Fan " + str(self.level)
-
-
-class Power(models.Model):
-    computer = models.ForeignKey('Computer')
-    level = models.SmallIntegerField()
-
-    def __str__(self):
-        return "Power " + str(self.level)
-
-
-class NetworkInterface(models.Model):
-    computer = models.ForeignKey('Computer')
-    level = models.SmallIntegerField()
-    power_usage = models.SmallIntegerField()
-    enabled = models.BooleanField()
-
-    def __str__(self):
-        return "NetworkInterface " + self.level
-
-
-class HardDrive(models.Model):
-    computer = models.Foreign('Computer')
-    level = models.SmallIntegerField()
-    power_usage = models.SmallIntegerField()
-
-    def __str__(self):
-        return "HardDrive " + self.level
-
-
 class Process(models.Model):
     name = models.CharField(max_length=10)
-    core = models.ForeignKey('Core')
-    memory_stick = models.ForeignKey('MemoryStick')
-    hard_drive = models.ForeignKey('HardDrive')
+    host = models.ForeignKey('Computer')
     owner = models.ForeignKey('Computer')
     level = models.SmallIntegerField()
     activated = models.SmallBooleanField()
